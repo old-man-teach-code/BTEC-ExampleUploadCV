@@ -18,6 +18,10 @@
                 <div class="card shadow">
                     <div class="card-body p-4">
                         <h2 class="card-title text-center mb-4">Nộp CV Sinh viên lớp SE06303</h2>
+                        <div class="mb-4 text-center">
+                            <div id="countdown-box" class="fw-bold fs-5 text-primary"></div>
+                            <div id="extension-note" class="text-danger mt-1" style="display:none;"></div>
+                        </div>
 
                         @if ($errors->any())
                             <div class="alert alert-danger">
@@ -124,27 +128,74 @@
             }
         });
 
-        // Loading spinner khi submit
         $('form').on('submit', function() {
             $('button[type=submit]').prop('disabled', true)
                 .html(
                     '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang upload...'
                 );
         });
-        $('#copy-cv-file-name').on('click', function() {
-            let fileName = $('#cv-file-name').val();
-            if (fileName) {
-                navigator.clipboard.writeText(fileName).then(function() {
-                    $('#copy-cv-file-name').text('Đã copy!').addClass('btn-success').removeClass(
-                        'btn-outline-secondary');
-                    setTimeout(function() {
-                        $('#copy-cv-file-name').text('Copy tên file').removeClass('btn-success')
-                            .addClass('btn-outline-secondary');
-                    }, 1500);
-                });
+
+        // ----------- Countdown + Lock Form Logic ------------
+
+        let deadline = new Date("2025-05-30T14:30:00+07:00").getTime();
+        let reopenTime = deadline + 60 * 60 * 1000; // +1 hour
+        let endExtension = reopenTime + 30 * 60 * 1000; // +30 mins
+        let now = null;
+        let interval = setInterval(function() {
+            now = new Date().getTime();
+
+            let distMain = deadline - now;
+            let distReopen = reopenTime - now;
+            let distFinal = endExtension - now;
+
+            if (distMain > 0) {
+                // Đang trong thời gian nộp bình thường
+                showCountdown(distMain, "Thời gian còn lại:");
+                enableForm();
+                $("#extension-note").hide();
+            } else if (distReopen > 0) {
+                // Đã hết hạn chính, chờ mở lại 30 phút
+                $("#countdown-box").text("Hết hạn nộp! Hệ thống sẽ mở bổ sung trong " + secondsToHMS(distReopen));
+                disableForm();
+                $("#extension-note").hide();
+            } else if (distFinal > 0) {
+                // Đang mở bổ sung 30 phút
+                showCountdown(distFinal, "Mở bổ sung 30 phút cuối cùng! Còn lại:");
+                enableForm();
+                $("#extension-note").show().text("Đang mở bổ sung 30 phút cuối cùng!");
+            } else {
+                // Hết hoàn toàn
+                $("#countdown-box").text("Đã kết thúc nộp CV!");
+                disableForm();
+                $("#extension-note").hide();
+                clearInterval(interval);
             }
-        });
+        }, 1000);
+
+        function showCountdown(dist, label) {
+            let t = secondsToHMS(dist);
+            $("#countdown-box").text(`${label} ${t}`);
+        }
+
+        function secondsToHMS(ms) {
+            let total = Math.floor(ms / 1000);
+            let h = Math.floor(total / 3600);
+            let m = Math.floor((total % 3600) / 60);
+            let s = total % 60;
+            return [h, m, s].map(x => x.toString().padStart(2, "0")).join(":");
+        }
+
+        function disableForm() {
+            $('form input, form select, form button').prop('disabled', true);
+            $('button[type=submit]').addClass('btn-secondary').removeClass('btn-primary');
+        }
+
+        function enableForm() {
+            $('form input, form select, form button').prop('disabled', false);
+            $('button[type=submit]').addClass('btn-primary').removeClass('btn-secondary');
+        }
     </script>
+
 </body>
 
 </html>
