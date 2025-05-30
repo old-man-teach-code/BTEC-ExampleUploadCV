@@ -140,6 +140,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // An toàn cho mọi môi trường
+        let ajaxUrl = '/get-student-name';
+        // hoặc nếu bắt buộc phải có domain:
+        let ajaxUrl2 = window.location.protocol + '//' + window.location.host + '/get-student-name';
+
         function removeAccents(str) {
             return str
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -152,7 +157,7 @@
             if (msv) {
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('cv.getStudentName') }}',
+                    url: ajaxUrl2,
                     data: {
                         msv: msv,
                         _token: '{{ csrf_token() }}'
