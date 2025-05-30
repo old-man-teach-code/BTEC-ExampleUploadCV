@@ -22,8 +22,15 @@ class CVController extends Controller
     {
         $msv = $request->msv;
         $student = Student::where('msv', $msv)->first();
-        return response()->json(['fullname' => $student?->fullname ?? '']);
+        return response()->json([
+            'fullname'    => $student?->fullname ?? '',
+            'cv_uploaded' => $student?->cv_uploaded ?? false,
+            'cv_filename' => $student?->cv_filename ?? '',
+            'form_done'   => $student?->form_done ?? false
+        ]);
+
     }
+
 
     public function upload(Request $request)
     {
@@ -36,10 +43,15 @@ class CVController extends Controller
         $fullnameSlug = str_replace(' ', '-', remove_accents($student->fullname));
         $filename = "CV_{$fullnameSlug}_{$student->msv}.pdf";
 
+
+
         // Check tên file
         if ($request->file('cv_file')->getClientOriginalName() !== $filename) {
             return back()->withErrors(['cv_file' => "Tên file phải đúng: $filename"]);
         }
+
+        $form_done = $request->has('form_done') ? 1 : 0;
+        $student->form_done = $form_done;
 
         // Lưu file vào storage/app/cv
         $request->file('cv_file')->storeAs('cv', $filename);

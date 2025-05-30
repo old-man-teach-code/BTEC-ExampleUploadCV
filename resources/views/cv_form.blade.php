@@ -55,6 +55,24 @@
                                     placeholder="Họ và tên sẽ tự động hiển thị">
                             </div>
                             <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="form_done" name="form_done"
+                                        value="1" required>
+                                    <label class="form-check-label fw-bold text-success" for="form_done">
+                                        Tôi cam kết đã hoàn thành
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLScXSjfQLmnEEWZCsjJDYT3glmt6RAX12N6bY_npaO7ho9uQiw/viewform"
+                                            target="_blank" class="text-primary text-decoration-underline">
+                                            form đăng ký thông tin
+                                        </a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Trạng thái làm Google Form:</label>
+                                <div id="form-done-status" class="fw-bold"></div>
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label">Tên file cần đặt:</label>
                                 <input type="text" id="cv-file-name" class="form-control bg-light" readonly
                                     style="font-weight:bold; color: #198754;">
@@ -119,6 +137,15 @@
                             $('#cv-file-name').val(`CV_${nameSlug}_${msv}.pdf`);
                         } else {
                             $('#cv-file-name').val('');
+                        }
+                        if (res.form_done) {
+                            $('#form-done-status').html(
+                                '<span class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16"><path d="M2.5 8a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0zm13 0A7.5 7.5 0 1 0 1 8a7.5 7.5 0 0 0 14.5 0z"/><path d="M10.97 5.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L5.324 9.384a.75.75 0 1 1 1.06-1.06l1.094 1.093 3.492-4.438z"/></svg> Đã xác nhận đã làm form</span>'
+                            );
+                        } else {
+                            $('#form-done-status').html(
+                                '<span class="text-warning"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/><path d="M7.002 11a1 1 0 1 0 2 0 1 1 0 0 0-2 0zm.93-4.481-.082 2.5a.552.552 0 0 0 1.104 0l-.082-2.5a.552.552 0 0 0-1.104 0z"/></svg> Chưa xác nhận làm form</span>'
+                            );
                         }
                     }
                 });
