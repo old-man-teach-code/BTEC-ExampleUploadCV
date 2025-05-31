@@ -224,7 +224,7 @@
 
         // ----------- Countdown + Lock Form Logic ------------
 
-        let deadline = new Date("2025-05-30T14:30:00+07:00").getTime();
+        let deadline = new Date("2025-05-31T17:30:00+07:00").getTime();
         let reopenTime = deadline + 60 * 60 * 1000; // +1 hour
         let endExtension = reopenTime + 30 * 60 * 1000; // +30 mins
         let now = null;
